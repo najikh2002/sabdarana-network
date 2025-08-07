@@ -1,17 +1,11 @@
-# Gunakan image node versi LTS
-FROM node:18
+FROM node:20.18.0
 
-# Set working directory
 WORKDIR /app
 
-# Copy file konfigurasi
 COPY package*.json ./
-
-# Install dependencies
 RUN npm install
 
-# Copy semua file project
 COPY . .
 
-# Perintah default container (opsional)
-CMD ["npx", "hardhat"]
+# Jalankan Hardhat node (atau sesuaikan command-nya)
+CMD ["npx", "hardhat", "node"]

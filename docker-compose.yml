@@ -1,0 +1,9 @@
+services:
+  hardhat:
+    build: .
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: npx hardhat node
+    ports:
+      - "8545:8545"

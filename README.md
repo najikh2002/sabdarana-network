@@ -240,6 +240,13 @@ sudo chown -R $USER:$USER ./artifacts ./cache
 
 ## 📞 Support
 
+### For Deploy Contract Manual
+
+```
+npx hardhat run scripts/deploy-token.js --network globalNode
+npx hardhat run scripts/deploy-nft.js --network globalNode
+```
+
 If you encounter issues:
 
 1. Check Docker and Docker Compose installation

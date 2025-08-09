@@ -1,11 +1,26 @@
-FROM node:20.18.0
+# Use Node.js version 20 to match local environment
+FROM node:20-alpine
 
+# Set working directory
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm install
+# Install system dependencies
+RUN apk add --no-cache git python3 make g++
 
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci --only=production
+
+# Copy project files
 COPY . .
 
-# Jalankan Hardhat node (atau sesuaikan command-nya)
-CMD ["npx", "hardhat", "node"]
+# Create directory for artifacts if it doesn't exist
+RUN mkdir -p artifacts cache
+
+# Expose port for Hardhat node
+EXPOSE 8545
+
+# Default command
+CMD ["npx", "hardhat", "node", "--hostname", "0.0.0.0"]

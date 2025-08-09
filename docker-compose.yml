@@ -1,9 +1,104 @@
+version: "3.8"
+
 services:
   hardhat:
     build: .
-    volumes:
-      - .:/app
-    working_dir: /app
-    command: npx hardhat node
+    container_name: hardhat-node
     ports:
       - "8545:8545"
+    volumes:
+      - ./contracts:/app/contracts
+      - ./scripts:/app/scripts
+      - ./test:/app/test
+      - ./artifacts:/app/artifacts
+      - ./cache:/app/cache
+      - ./ignition:/app/ignition
+    environment:
+      - NODE_ENV=development
+    networks:
+      - hardhat-network
+    restart: unless-stopped
+    command: npx hardhat node --hostname 0.0.0.0
+
+  # Optional: Add a service for running tests
+  hardhat-test:
+    build: .
+    container_name: hardhat-test
+    volumes:
+      - ./contracts:/app/contracts
+      - ./scripts:/app/scripts
+      - ./test:/app/test
+      - ./artifacts:/app/artifacts
+      - ./cache:/app/cache
+    environment:
+      - NODE_ENV=test
+    networks:
+      - hardhat-network
+    profiles:
+      - testing
+    command: npx hardhat test
+
+  # Service for deploying token
+  deploy-token:
+    build: .
+    container_name: hardhat-deploy-token
+    volumes:
+      - ./contracts:/app/contracts
+      - ./scripts:/app/scripts
+      - ./ignition:/app/ignition
+      - ./artifacts:/app/artifacts
+      - ./cache:/app/cache
+      - ./accounts.txt:/app/accounts.txt
+      - ./hardhat.config.js:/app/hardhat.config.js
+    environment:
+      - NODE_ENV=production
+    networks:
+      - hardhat-network
+    profiles:
+      - deploy
+    command: npx hardhat run scripts/deploy-token.js --network globalNode
+
+  # Service for deploying NFT
+  deploy-nft:
+    build: .
+    container_name: hardhat-deploy-nft
+    volumes:
+      - ./contracts:/app/contracts
+      - ./scripts:/app/scripts
+      - ./ignition:/app/ignition
+      - ./artifacts:/app/artifacts
+      - ./cache:/app/cache
+      - ./accounts.txt:/app/accounts.txt
+      - ./hardhat.config.js:/app/hardhat.config.js
+    environment:
+      - NODE_ENV=production
+    networks:
+      - hardhat-network
+    profiles:
+      - deploy
+    command: npx hardhat run scripts/deploy-nft.js --network globalNode
+
+  # General deployment service
+  hardhat-deploy:
+    build: .
+    container_name: hardhat-deploy
+    volumes:
+      - ./contracts:/app/contracts
+      - ./scripts:/app/scripts
+      - ./ignition:/app/ignition
+      - ./artifacts:/app/artifacts
+      - ./cache:/app/cache
+      - ./accounts.txt:/app/accounts.txt
+      - ./hardhat.config.js:/app/hardhat.config.js
+    environment:
+      - NODE_ENV=production
+    networks:
+      - hardhat-network
+    profiles:
+      - deploy
+    stdin_open: true
+    tty: true
+
+networks:
+  hardhat-network:
+    driver: bridge

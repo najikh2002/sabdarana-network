@@ -7,11 +7,14 @@ WORKDIR /app
 # Install system dependencies
 RUN apk add --no-cache git python3 make g++
 
-# Copy package files
+# Copy package files first for better caching
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production
+# Clean install dependencies
+RUN npm ci
+
+# Verify hardhat is installed
+RUN npx hardhat --version || npm install --save-dev hardhat
 
 # Copy project files
 COPY . .
@@ -19,8 +22,12 @@ COPY . .
 # Create directory for artifacts if it doesn't exist
 RUN mkdir -p artifacts cache
 
+# Set proper permissions
+RUN chown -R node:node /app
+USER node
+
 # Expose port for Hardhat node
 EXPOSE 8545
 
-# Default command
+# Default command with full path
 CMD ["npx", "hardhat", "node", "--hostname", "0.0.0.0"]

@@ -30,9 +30,9 @@ if ! docker info > /dev/null 2>&1; then
     exit 1
 fi
 
-# Check if docker-compose is available
-if ! command -v docker-compose &> /dev/null; then
-    print_error "docker-compose is not installed. Please install docker-compose and try again."
+# Check if docker compose is available
+if ! command -v docker compose &> /dev/null; then
+    print_error "docker compose is not installed. Please install docker compose and try again."
     exit 1
 fi
 
@@ -42,7 +42,7 @@ echo
 
 # Build Docker image if needed
 print_status "Building Docker image..."
-if docker-compose build hardhat; then
+if docker compose build hardhat; then
     print_success "Docker image built successfully"
 else
     print_error "Failed to build Docker image"
@@ -53,7 +53,7 @@ echo
 
 # Deploy Token Contract
 print_status "🚀 Deploying Token Contract..."
-if docker-compose --profile deploy run --rm deploy-token; then
+if docker compose --profile deploy run --rm deploy-token; then
     print_success "Token contract deployed successfully"
 else
     print_error "Failed to deploy token contract"
@@ -64,7 +64,7 @@ echo
 
 # Deploy NFT Contract
 print_status "🎨 Deploying NFT Contract..."
-if docker-compose --profile deploy run --rm deploy-nft; then
+if docker compose --profile deploy run --rm deploy-nft; then
     print_success "NFT contract deployed successfully"
 else
     print_error "Failed to deploy NFT contract"

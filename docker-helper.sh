@@ -23,58 +23,58 @@ print_error() {
 case "$1" in
     "start")
         print_status "🚀 Starting Hardhat node..."
-        docker-compose up -d hardhat
+        docker compose up -d hardhat
         print_success "Hardhat node is running on http://localhost:8545"
         ;;
 
     "stop")
         print_status "⏹️ Stopping all services..."
-        docker-compose down
+        docker compose down
         print_success "All services stopped"
         ;;
 
     "restart")
         print_status "🔄 Restarting Hardhat node..."
-        docker-compose restart hardhat
+        docker compose restart hardhat
         print_success "Hardhat node restarted"
         ;;
 
     "logs")
         print_status "📋 Showing logs..."
-        docker-compose logs -f hardhat
+        docker compose logs -f hardhat
         ;;
 
     "build")
         print_status "🔨 Building Docker image..."
-        docker-compose build
+        docker compose build
         print_success "Build completed"
         ;;
 
     "compile")
         print_status "⚙️ Compiling contracts..."
-        docker-compose run --rm hardhat npx hardhat compile
+        docker compose run --rm hardhat npx hardhat compile
         print_success "Contracts compiled"
         ;;
 
     "test")
         print_status "🧪 Running tests..."
-        docker-compose --profile testing run --rm hardhat-test
+        docker compose --profile testing run --rm hardhat-test
         ;;
 
     "clean")
         print_status "🧹 Cleaning up..."
-        docker-compose down --rmi all --volumes --remove-orphans
+        docker compose down --rmi all --volumes --remove-orphans
         print_success "Cleanup completed"
         ;;
 
     "shell")
         print_status "💻 Opening shell in container..."
-        docker-compose run --rm hardhat bash
+        docker compose run --rm hardhat bash
         ;;
 
     "status")
         print_status "📊 Container status:"
-        docker-compose ps
+        docker compose ps
         ;;
 
     *)
